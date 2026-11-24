@@ -10,7 +10,7 @@ const auth = useAuthStore()
 
 <template>
   <div class="flex min-h-screen items-center justify-center bg-slate-50 px-4 text-slate-900">
-    <div class="w-full max-w-[400px] rounded-xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+    <div class="w-full max-w-[400px] rounded-xl border border-slate-200 bg-white p-6 text-center shadow-sm">
       <CircleAlert
         class="mx-auto h-6 w-6 text-slate-400"
         aria-hidden="true"
@@ -31,7 +31,7 @@ const auth = useAuthStore()
         </Button>
         <Button
           v-if="!auth.isAuthenticated"
-          variant="outline"
+          variant="secondary"
           size="sm"
           @click="router.replace('/login')"
         >

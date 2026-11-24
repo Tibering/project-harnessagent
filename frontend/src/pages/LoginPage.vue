@@ -11,30 +11,35 @@ const auth = useAuthStore()
 const username = ref('')
 const nickname = ref('')
 const submitting = ref(false)
-const errorMessage = ref('')
+const formError = ref('')
+const fieldErrors = ref<{ username?: string; nickname?: string }>({})
 
-function validate(): string {
+const inputBase = 'mt-1 h-9 w-full rounded-lg border bg-white px-3 text-sm text-slate-900 placeholder:text-slate-500 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-400'
+
+function validate(): boolean {
+  const errors: { username?: string; nickname?: string } = {}
   const name = username.value.trim()
   const nick = nickname.value.trim()
 
   if (!name) {
-    return '请填写用户名'
+    errors.username = '请填写用户名'
+  } else if (name.length < 3 || name.length > 32) {
+    errors.username = '用户名长度需在 3-32 之间'
   }
-  if (name.length < 3 || name.length > 32) {
-    return '用户名长度需在 3-32 之间'
-  }
+
   if (!nick) {
-    return '请填写昵称'
+    errors.nickname = '请填写昵称'
+  } else if (nick.length > 32) {
+    errors.nickname = '昵称长度不能超过 32'
   }
-  if (nick.length > 32) {
-    return '昵称长度不能超过 32'
-  }
-  return ''
+
+  fieldErrors.value = errors
+  return Object.keys(errors).length === 0
 }
 
 async function handleSubmit(): Promise<void> {
-  errorMessage.value = validate()
-  if (errorMessage.value) {
+  formError.value = ''
+  if (!validate()) {
     return
   }
 
@@ -43,7 +48,7 @@ async function handleSubmit(): Promise<void> {
     await auth.login(username.value.trim(), nickname.value.trim())
     await router.replace('/')
   } catch (error) {
-    errorMessage.value = error instanceof ApiError ? error.message : '进入失败，请稍后重试'
+    formError.value = error instanceof ApiError ? error.message : '进入失败，请稍后重试'
   } finally {
     submitting.value = false
   }
@@ -87,8 +92,18 @@ async function handleSubmit(): Promise<void> {
               autofocus
               maxlength="32"
               placeholder="3-32 位，再次进入会复用同一个用户"
-              class="mt-1 h-9 w-full rounded-lg border border-slate-500 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-500 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              :disabled="submitting"
+              :aria-invalid="Boolean(fieldErrors.username) || undefined"
+              :aria-describedby="fieldErrors.username ? 'username-error' : undefined"
+              :class="[inputBase, fieldErrors.username ? 'border-red-600' : 'border-slate-500']"
             >
+            <p
+              v-if="fieldErrors.username"
+              id="username-error"
+              class="mt-1 text-xs text-red-700"
+            >
+              {{ fieldErrors.username }}
+            </p>
           </div>
 
           <div>
@@ -106,23 +121,33 @@ async function handleSubmit(): Promise<void> {
               autocomplete="nickname"
               maxlength="32"
               placeholder="显示在侧栏，最多 32 个字符"
-              class="mt-1 h-9 w-full rounded-lg border border-slate-500 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-500 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              :disabled="submitting"
+              :aria-invalid="Boolean(fieldErrors.nickname) || undefined"
+              :aria-describedby="fieldErrors.nickname ? 'nickname-error' : undefined"
+              :class="[inputBase, fieldErrors.nickname ? 'border-red-600' : 'border-slate-500']"
             >
+            <p
+              v-if="fieldErrors.nickname"
+              id="nickname-error"
+              class="mt-1 text-xs text-red-700"
+            >
+              {{ fieldErrors.nickname }}
+            </p>
           </div>
         </div>
 
         <p
-          v-if="errorMessage"
+          v-if="formError"
           class="mt-4 text-sm text-red-700"
           role="alert"
         >
-          {{ errorMessage }}
+          {{ formError }}
         </p>
 
         <Button
           type="submit"
           class="mt-6 w-full"
-          :disabled="submitting"
+          :loading="submitting"
         >
           {{ submitting ? '进入中…' : '进入工作台' }}
         </Button>

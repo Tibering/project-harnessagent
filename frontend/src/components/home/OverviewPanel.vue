@@ -34,26 +34,23 @@ const { data, isPending, isError, error, refetch } = useQuery({
 
       <div class="mt-4 flex items-center gap-3">
         <Button
-          variant="outline"
+          variant="secondary"
           size="sm"
+          :loading="isPending"
           @click="refetch()"
         >
           重新检测
         </Button>
         <span
-          v-if="isPending"
-          class="text-sm text-slate-500"
-        >检测中…</span>
-        <span
-          v-else-if="isError"
+          v-if="isError"
           class="text-sm text-red-700"
         >
           {{ (error as Error).message }}
         </span>
         <span
-          v-else
+          v-else-if="data"
           class="text-sm text-emerald-700"
-        >后端状态：{{ data?.status }}</span>
+        >后端状态：{{ data.status }}</span>
       </div>
     </div>
   </section>

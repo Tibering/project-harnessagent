@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { BookOpen, PanelLeftClose, PanelLeftOpen } from 'lucide-vue-next'
 import { MENU_ITEMS } from '@/config/menu'
 import { COMPONENT_DOCS, type ComponentDoc } from '@/config/docs'
+import Badge from '@/components/ui/badge/Badge.vue'
 import { cn } from '@/lib/utils'
 import { useResizableWidth } from '@/composables/useResizableWidth'
 
@@ -55,13 +56,13 @@ const activeDoc = computed<ComponentDoc | undefined>(() =>
   COMPONENT_DOCS.find((doc) => doc.key === activeKey.value),
 )
 
-function statusOf(doc?: ComponentDoc): { label: string; class: string } {
+function statusOf(doc?: ComponentDoc): { label: string; tone: 'info' | 'neutral' | 'warning' } {
   if (!doc) {
-    return { label: '待补充', class: 'bg-amber-50 text-amber-700' }
+    return { label: '待补充', tone: 'warning' }
   }
   return doc.status === 'ready'
-    ? { label: '已接入', class: 'bg-blue-50 text-blue-700' }
-    : { label: '占位', class: 'bg-slate-100 text-slate-600' }
+    ? { label: '已接入', tone: 'info' }
+    : { label: '占位', tone: 'neutral' }
 }
 </script>
 
@@ -117,7 +118,7 @@ function statusOf(doc?: ComponentDoc): { label: string; class: string } {
               />
               <component
                 :is="entry.icon"
-                class="h-4 w-4 shrink-0"
+                class="h-5 w-5 shrink-0"
                 aria-hidden="true"
               />
               <span
@@ -143,12 +144,12 @@ function statusOf(doc?: ComponentDoc): { label: string; class: string } {
           >
             <PanelLeftOpen
               v-if="docsNavCollapsed"
-              class="h-4 w-4 shrink-0"
+              class="h-5 w-5 shrink-0"
               aria-hidden="true"
             />
             <PanelLeftClose
               v-else
-              class="h-4 w-4 shrink-0"
+              class="h-5 w-5 shrink-0"
               aria-hidden="true"
             />
             <span
@@ -182,7 +183,7 @@ function statusOf(doc?: ComponentDoc): { label: string; class: string } {
         v-if="activeKey === HOME_KEY"
         class="min-w-0 rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
       >
-        <h2 class="text-lg font-semibold">
+        <h2 class="text-xl font-semibold">
           文档首页
         </h2>
         <p class="mt-2 text-sm leading-6 text-slate-700">
@@ -261,16 +262,13 @@ function statusOf(doc?: ComponentDoc): { label: string; class: string } {
               class="h-5 w-5 shrink-0 text-slate-500"
               aria-hidden="true"
             />
-            <h2 class="truncate text-lg font-semibold">
+            <h2 class="truncate text-xl font-semibold">
               {{ activeEntry?.label }}
             </h2>
           </div>
-          <span
-            class="shrink-0 rounded-md px-2 py-0.5 text-xs font-medium"
-            :class="statusOf(activeDoc).class"
-          >
+          <Badge :tone="statusOf(activeDoc).tone">
             {{ statusOf(activeDoc).label }}
-          </span>
+          </Badge>
         </div>
 
         <p class="mt-1 text-xs text-slate-500">
@@ -344,7 +342,7 @@ function statusOf(doc?: ComponentDoc): { label: string; class: string } {
         <div class="mt-5 border-t border-slate-200 pt-3">
           <button
             type="button"
-            class="rounded-md px-1 py-0.5 text-sm text-slate-500 transition-colors duration-150 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+            class="flex h-8 items-center rounded-md px-2 text-sm text-slate-600 transition-colors duration-150 hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
             @click="activeKey = HOME_KEY"
           >
             返回文档首页

@@ -229,7 +229,7 @@ async function handleLogout(): Promise<void> {
               @click="handleLogout()"
             >
               <LogOut
-                class="h-4 w-4 shrink-0"
+                class="h-5 w-5 shrink-0"
                 aria-hidden="true"
               />
               退出
@@ -294,7 +294,7 @@ async function handleLogout(): Promise<void> {
               <li class="shrink-0">
                 <button
                   type="button"
-                  class="rounded-md px-1 py-0.5 text-slate-500 transition-colors duration-150 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                  class="flex h-7 items-center rounded-md px-2 text-sm text-slate-600 transition-colors duration-150 hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                   @click="goHome()"
                 >
                   首页
