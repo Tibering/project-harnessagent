@@ -50,7 +50,20 @@ pnpm install
 pnpm dev
 ```
 
-打开 <http://localhost:5173>，页面会显示后端健康状态（Vite 已把 `/api` 代理到 8090）。
+打开 <http://localhost:5173>，首次进入会用体验期身份（用户名 + 昵称）登录（Vite 已把 `/api` 代理到 8090）。
+
+前端三个顶层页面：
+
+| 路由 | 说明 |
+|---|---|
+| `/login` | 体验期身份入场，无侧栏 |
+| `/` | 首页单体：侧栏菜单在内部切换组件，URL 不变；顶部是面包栏 |
+| 其他路径 | 直接渲染 404，保留原始地址 |
+
+- 菜单与组件注册：`frontend/src/config/menu.ts`
+- 组件说明页（侧栏「文档」）：`frontend/src/config/docs.ts`
+- 身份与请求头：`frontend/src/stores/auth.ts`、`frontend/src/lib/http.ts`
+- 会话失效（`40101`/`40102`）会清空本地身份并跳回登录页
 
 ## 体验期身份（无登录）
 

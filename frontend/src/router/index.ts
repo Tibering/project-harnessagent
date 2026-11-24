@@ -1,21 +1,5 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import AppLayout from '@/layouts/AppLayout.vue'
+import { createAppRouter } from './createAppRouter'
 
-const router = createRouter({
-  history: createWebHistory(),
-  routes: [
-    {
-      path: '/',
-      component: AppLayout,
-      children: [
-        {
-          path: '',
-          name: 'home',
-          component: () => import('@/pages/HomePage.vue'),
-        },
-      ],
-    },
-  ],
-})
+const router = createAppRouter()
 
 export default router

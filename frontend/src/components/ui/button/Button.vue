@@ -14,6 +14,7 @@ const props = withDefaults(
 const classes = computed(() =>
   cn(
     'inline-flex items-center justify-center rounded-md font-medium transition-colors disabled:opacity-50',
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2',
     props.size === 'sm' ? 'h-8 px-3 text-sm' : 'h-10 px-4 text-sm',
     props.variant === 'default' && 'bg-slate-900 text-white hover:bg-slate-800',
     props.variant === 'outline' && 'border border-slate-300 bg-white hover:bg-slate-100',
