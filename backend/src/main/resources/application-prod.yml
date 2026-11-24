@@ -1,0 +1,15 @@
+logging:
+  level:
+    com.project.harnessagent: info
+
+spring:
+  flyway:
+    validate-on-migrate: true
+  datasource:
+    hikari:
+      maximum-pool-size: 20
+
+management:
+  endpoint:
+    health:
+      show-details: never

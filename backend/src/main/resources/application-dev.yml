@@ -1,0 +1,4 @@
+logging:
+  level:
+    com.project.harnessagent: debug
+    org.springframework.jdbc.core: debug
