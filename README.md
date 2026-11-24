@@ -52,6 +52,45 @@ pnpm dev
 
 打开 <http://localhost:5173>，页面会显示后端健康状态（Vite 已把 `/api` 代理到 8090）。
 
+## 体验期身份（无登录）
+
+骨架阶段还没有认证。首屏输入用户名与昵称即可进入，之后每个请求带上服务端返回的两个头：
+
+| 头 | 值 |
+|---|---|
+| `X-User-Id` | 入场接口返回的 `userId` |
+| `X-Session-Id` | 入场接口返回的 `sessionId` |
+
+```bash
+# 进入（同名再次进入复用同一用户，会话是新的）
+curl -s -X POST http://localhost:8090/api/experience/session \
+  -H 'Content-Type: application/json' \
+  -d '{"username":"alice","nickname":"爱丽丝"}'
+
+# 之后带着两个头
+curl -s http://localhost:8090/api/experience/session \
+  -H 'X-User-Id: <userId>' -H 'X-Session-Id: <sessionId>'
+```
+
+接口一览：
+
+| 方法 | 路径 | 说明 |
+|---|---|---|
+| POST | `/api/experience/session` | 进入系统，拿 `userId` + `sessionId` |
+| GET | `/api/experience/session` | 查看当前身份（需两个头） |
+| DELETE | `/api/experience/session` | 退出，只作废当前会话 |
+| GET | `/api/users?q=` | 用户列表，可按用户名/昵称/租户过滤 |
+| GET | `/api/users/{id}` | 用户详情 |
+| POST | `/api/users` | 新建用户 |
+| PUT | `/api/users/{id}` | 修改昵称、租户、角色 |
+| DELETE | `/api/users/{id}` | 删除用户 |
+
+约束：
+
+- 用户与会话都只在内存，**重启即清空**，不要当真实账号用。
+- 体验期没有任何鉴权，`/api/users` 全开放；约定见 [ADR 0004](docs/adr/0004-experience-identity.md)。
+- **认证落地前不得公网部署**，只在本机或内网使用。
+
 ## 验证
 
 ```bash
