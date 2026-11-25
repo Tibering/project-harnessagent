@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { BookOpen, PanelLeftClose, PanelLeftOpen } from 'lucide-vue-next'
+import { BookOpen, Database, PanelLeftClose, PanelLeftOpen } from 'lucide-vue-next'
 import { MENU_ITEMS } from '@/config/menu'
 import { COMPONENT_DOCS, type ComponentDoc } from '@/config/docs'
 import Badge from '@/components/ui/badge/Badge.vue'
+import FileDdlView from '@/components/home/docs/FileDdlView.vue'
 import { cn } from '@/lib/utils'
 import { useResizableWidth } from '@/composables/useResizableWidth'
+import fileSchema from '../../../../docs/db/file/schema.sql?raw'
 
 const HOME_KEY = 'home'
+const DDL_KEY = 'file-ddl'
 const COLLAPSED_KEY = 'harness-agent.docs-nav-collapsed'
 
 const activeKey = ref<string>(HOME_KEY)
@@ -48,6 +51,7 @@ const entries = computed(() => [
   ...MENU_ITEMS
     .filter((item) => item.key !== 'docs')
     .map((item) => ({ key: item.key, label: item.label, icon: item.icon })),
+  { key: DDL_KEY, label: '文件 DDL', icon: Database },
 ])
 
 const activeEntry = computed(() => entries.value.find((entry) => entry.key === activeKey.value))
@@ -60,9 +64,13 @@ function statusOf(doc?: ComponentDoc): { label: string; tone: 'info' | 'neutral'
   if (!doc) {
     return { label: '待补充', tone: 'warning' }
   }
-  return doc.status === 'ready'
-    ? { label: '已接入', tone: 'info' }
-    : { label: '占位', tone: 'neutral' }
+  if (doc.status === 'ready') {
+    return { label: '已接入', tone: 'info' }
+  }
+  if (doc.status === 'prototype') {
+    return { label: '原型', tone: 'neutral' }
+  }
+  return { label: '占位', tone: 'neutral' }
 }
 </script>
 
@@ -249,6 +257,13 @@ function statusOf(doc?: ComponentDoc): { label: string; tone: 'info' | 'neutral'
           <li>在 <code class="rounded bg-slate-100 px-1 font-mono text-xs">config/docs.ts</code> 补该 key 的说明、展示内容与依赖接口。</li>
           <li>跑 <code class="rounded bg-slate-100 px-1 font-mono text-xs">pnpm test</code>，覆盖校验会拦住漏写的说明。</li>
         </ol>
+      </article>
+
+      <article
+        v-else-if="activeKey === DDL_KEY"
+        class="min-w-0 rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+      >
+        <FileDdlView :sql="fileSchema" />
       </article>
 
       <article

@@ -1,7 +1,8 @@
 import type { Component } from 'vue'
-import { Activity, FileText } from 'lucide-vue-next'
+import { Activity, FileText, FolderOpen } from 'lucide-vue-next'
 import OverviewPanel from '@/components/home/OverviewPanel.vue'
 import DocsPanel from '@/components/home/DocsPanel.vue'
+import FilesPanel from '@/components/home/files/FilesPanel.vue'
 
 export interface MenuItem {
   key: string
@@ -19,6 +20,12 @@ export const MENU_ITEMS: MenuItem[] = [
     label: '概览',
     icon: Activity,
     component: OverviewPanel,
+  },
+  {
+    key: 'files',
+    label: '文件',
+    icon: FolderOpen,
+    component: FilesPanel,
   },
   {
     key: 'docs',
