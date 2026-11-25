@@ -11,7 +11,7 @@
 | 数据访问 | MyBatis-Plus + Flyway |
 | 数据库 | PostgreSQL 17 + pgvector |
 | Web 层 | Spring MVC + SseEmitter |
-| Agent 运行时 | AgentScope Java 2.0（随 chat 模块引入） |
+| Agent 运行时 | AgentScope Java 2.0（随 chat 模块引入，摘要见 [docs/agentscope-java.md](docs/agentscope-java.md)） |
 
 ## 目录
 
